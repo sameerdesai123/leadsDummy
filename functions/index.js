@@ -14,6 +14,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.engine('html', mustacheExpress(path.join(__dirname , '/views') + '/partials', '.html'));  // register file extension mustache
 app.set('view engine', 'html');                 // register file extension for partials
 app.set('views', path.join(__dirname , '/views'));
