@@ -4,6 +4,8 @@ mustacheExpress = require('mustache-express');
 const cors = require('cors');
 const app = express();
 const Users = require('./routes/users');
+const Leads = require('./routes/leads');
+const Jobs = require('./routes/jobs');
 const path = require('path');
 require('dotenv').config();
 
@@ -14,13 +16,15 @@ app.set('view engine', 'html');                 // register file extension for p
 app.set('views', path.join(__dirname , '/views'));
 
 app.use('/api/users', Users);
+app.use('/api/leads', Leads);
+app.use('/api/jobs', Jobs);
 
 app.get('/', (req, res) => {
     res.render('admin-portal-main');    
 });
 
 app.get('**', (req, res) => {
-    res.send("Endpoint does't exist");
+    res.send("Endpoint doesn't exist");
 })
 
 exports.app = functions.https.onRequest(app);

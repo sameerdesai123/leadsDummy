@@ -1,8 +1,11 @@
 var admin = require("firebase-admin");
 
-// var serviceAccount = require('./.firebase-adminsdk.json');
+var serviceAccount = require('./.firebase-adminsdk.json');
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://leadsdummy.firebaseio.com"
+});
 
 let db = admin.firestore();
 
