@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.12.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.12.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.12.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.12.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.12.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">  
+    <h1 class="text-center">Leads Dummy Project API's: </h1>
+    <table class="table table-hover text-center border table-striped table-responsive table-dark">
+      <thead>
+        <th>S.No</th>
+        <th>Purpose</th>
+        <th>Path</th>
+        <th>Request Type</th>
+        <th>Request header</th>
+        <th>Request Body</th>
+        <th>Response on Success</th>
+        <th>Response on Failure</th>
+      </thead>
+      <tbody>
+        <tr>
+        <td>1</td>
+        <td>Admin Login</td>
+        <td>/admin-login</td>
+        <td>POST</td>
+        <td>NA</td>
+        <td>{ "username": "", "password": ""}</td>
+        <td>{ "success": true, token: "gvucv...", "msg": Logged in as Admin}</td>
+        <td>{ "success": false, "msg": "reason for failure"}</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>User Login</td>
+          <td>/api/users/login</td>
+          <td>POST</td>
+          <td>NA</td>
+          <td>{ "mobile": 1111111111 }</td>
+          <td>{ "success": true, token: "gvucv..."}</td>
+          <td>{ "success": false, "msg": "reason for failure"}</td>
+          </tr>
+        <tr>
+            <td>3</td>
+            <td>Get all Users</td>
+            <td>/api/users/all</td>
+            <td>GET</td>
+            <td>{ "Authorization": "Bearer << Token >>"}</td>
+            <td>NA</td>
+            <td>{ "success": true, data: [ {"id": "XYZ", "data": {} }, ...]}</td>
+            <td>{ "success": false, "msg": "reason for failure"}</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Get One User</td>
+          <td>/api/users/one</td>
+          <td>POST</td>
+          <td>{ "Authorization": "Bearer << Token >>"}</td>
+          <td>{ "document": "XYZ" }</td>
+          <td>{ "success": true, data: { ... } }</td>
+          <td>{ "success": false, "msg": "reason for failure"}</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Create User</td>
+        <td>/api/users/create</td>
+        <td>POST</td>
+        <td>{ "Authorization": "Bearer << Token >>"}</td>
+        <td> {
+          "Role": "Manager",
+          "Name": "XYZ",
+          "create": true,
+          "read": true,
+          "mobile": 6634563434,
+          "ID": "ABCJV",
+          "update": true
+      }</td>
+        <td>{ "success": true, "id": "akhln.."}</td>
+        <td>{ "success": false, "msg": "reason for failure"}</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Get all Users</td>
+      <td>/api/users/all</td>
+      <td>GET</td>
+      <td>{ "Authorization": "Bearer << Token >>"}</td>
+      <td>NA</td>
+      <td>{ "success": true, data: [ {"id": "XYZ", "data": {} }, ...]}</td>
+      <td>{ "success": false, "msg": "reason for failure"}</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Get One User</td>
+    <td>/api/users/one</td>
+    <td>POST</td>
+    <td>{ "Authorization": "Bearer << Token >>"}</td>
+    <td>{ "document": "XYZ" }</td>
+    <td>{ "success": true, data: { ... } }</td>
+    <td>{ "success": false, "msg": "reason for failure"}</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Create User</td>
+  <td>/api/users/create</td>
+  <td>POST</td>
+  <td>{ "Authorization": "Bearer << Token >>"}</td>
+  <td> {
+    "Role": "Manager",
+    "Name": "XYZ",
+    "create": true,
+    "read": true,
+    "mobile": 6634563434,
+    "ID": "ABCJV",
+    "update": true
+}</td>
+  <td>{ "success": true, "id": "akhln.."}</td>
+  <td>{ "success": false, "msg": "reason for failure"}</td>
+</tr>
+      </tbody>
+    </table>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -6,12 +6,12 @@
     "source": "functions"
   },
   "hosting": {
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "engine": {"node":"8"},
     "rewrites": [
       {
         "source": "**",

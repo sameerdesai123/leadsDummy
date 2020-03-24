@@ -9,10 +9,11 @@ require('dotenv').config();
 
 // Middleware
 router.use(express.json());
-const collection = 'leads';
+const collection = 'jobs         ';
 
 // Functions 
 var ensureToken = (req,res,next) => {
+    console.log("Ensuring Token");
     var bearerHeader = req.headers['authorization'];
      if(typeof bearerHeader !== 'undefined'){
          res.token = bearerHeader.split(' ')[1];
@@ -62,7 +63,7 @@ router.get('/details', ensureToken, (req, res, next) => {
     })
 });
 
-router.get('/all', ensureToken, (req, res, next) => {
+router.get('/all', ensureToken, async (req, res, next) => {
     var allDocs = [];
     jwt.verify(res.token, process.env.SECRET_KEY, (err, data) => {
         if(err){
@@ -77,7 +78,10 @@ router.get('/all', ensureToken, (req, res, next) => {
         .then(querySnapshot => {
             console.log("get() method resolved ");
             querySnapshot.forEach(doc => {
-                allDocs.push({document: doc.id, data: doc.data()});
+                let data = doc.data();
+                // data.user = getUserData(data);
+                // data.lead = getLeadData(data);
+                allDocs.push({document: doc.id, data: data});
             });
             console.log();
             res.json({ success:true, data: allDocs});
@@ -89,22 +93,76 @@ router.get('/all', ensureToken, (req, res, next) => {
             return;
         })
     })
-})
+})                                
 
-router.post('/create', ensureToken, ensureMobile, (req, res, next) => {
+async function getUserData(document){
+    let data = {}
+    console.log(document);
+    return db.collection('users').doc(document).get()
+        .then(doc => {
+            if(!doc.exists){
+                console.log("Document does not exist");
+            }
+            else{
+                console.log(doc.data());
+                data = { success: true, data: doc.data()};
+            }
+            return data;
+        })
+        .catch(err => {
+            console.log(err);
+            data = { success: false, msg: "Failed to retrive User info"};
+        })
+}
+
+async function getLeadData(document){
+    let data = {}
+    console.log(document);
+    return db.collection('leads').doc(document).get()
+        .then(doc => {
+            if(!doc.exists){
+                console.log("Document does not exist");
+            }
+            else{
+                console.log(doc.data());
+                data = { success: true, data: doc.data()};
+            }
+            return data;
+        })
+        .catch(err => {
+            console.log(err);
+            data = { success: false, msg: "Failed to retrive Lead info"};
+        })
+}
+
+router.post('/create', ensureToken, (req, res, next) => {
     jwt.verify(res.token, process.env.SECRET_KEY, (err, data) => {
+        console.log("Token Verifying");
+        
         if(err){
             res.json({ success: false, message: "User not permitted"});
         }
+        console.log("Verified");
+        
         var create = data.create;
         if(!create){
             res.json({ success: false, message: "Permission Denied"});
         }
-        var body = req.body;
-        db.collection(collection).doc(sha1(req.body.mobile)).set(body)    
+        var leads = req.body.lead;
+        var job = req.body.job;
+        job.user = data.document;
+        job.alert_date = new Date(job.alert_date);
+        job.created_date = new Date(job.created_date);
+        job.followup_date = new Date(job.followup_date);
+        db.collection('leads').doc(sha1(leads.mobile)).set(leads)    
         .then( () => {
-            console.log(sha1(req.body.mobile));
-            res.json({ success:true, data: sha1(req.body.mobile)});
+            job.lead = sha1(leads.mobile)
+            console.log(sha1(leads.mobile));
+            return createJob(job);
+        })
+        .then((response) => {
+            console.log(response);
+            res.json(response);
             return;
         })
         .catch(err => {
@@ -114,5 +172,20 @@ router.post('/create', ensureToken, ensureMobile, (req, res, next) => {
         })
     })
 });
+
+async function createJob(job){
+    var res = {};
+    return db.collection('jobs').add(job)
+            .then((doc) => {
+                console.log("Job Created : ", doc.id);
+                res = {success: true, id: doc.id}
+                return res;
+            })
+            .catch((err) => {
+            console.log("Failed to create Job : "+err);
+            res = { success: false, msg: "Failed to create a Job"}
+                return res;
+            })
+}
 
 module.exports = router;
