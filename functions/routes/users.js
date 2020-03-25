@@ -33,25 +33,48 @@ var ensureMobile = (req,res,next) => {
 
 //Routes
 
+var addFCMToken = async (data) => {
+    return db.collection(collection).doc(data.document).update({FCM : data.fcm})
+    .then(() => {
+        res = data.res
+        return res;
+    })
+    .catch((err) => {
+    console.log("Failed to update FCM : "+err);
+    res = { success: false, msg: "Updating fcm token failed"}
+        return res;
+    });
+}
+
 router.post('/login',ensureMobile, async (req,res, next) => {
     var mobile = req.body.mobile;
+    var fcm = req.body.fcm_token;
     var data = []
+    var name, role;
     console.log(typeof mobile, ": ", mobile);
     db.collection(collection).where('mobile', '==', mobile).get()
         .then(querySnapshot => {
-            console.log("get() method resolved ");
+            console.log("Found User");
             querySnapshot.forEach(doc => {
                 console.log("doc id : ", doc.id);
                 data.push(doc.id);
                 data.push(doc.data().read);
                 data.push(doc.data().create);
+                data.push(doc.data().update);
+                name = doc.data().Name;
+                role = doc.data().Role;
             });
-            console.log({ document: data[0], read: data[1], create: data[2]});
-            var token = jwt.sign({ document: data[0], read: data[1], create: data[2] }, process.env.SECRET_KEY, { expiresIn: '180 s' });
-            res.json({
+            console.log({ document: data[0], read: data[1], create: data[2], update: data[3]});
+            var token = jwt.sign({ document: data[0], read: data[1], create: data[2], update: data[3] }, process.env.SECRET_KEY, { expiresIn: '180 s' });
+            return addFCMToken({ res : {
                 success: true,
-                token
-            });
+                token,
+                name,
+                role
+            }, fcm: fcm, document: data[0]});
+        })
+        .then(data => {
+            res.json(data);
             return;
         })
         .catch(err => {
@@ -105,7 +128,7 @@ router.get('/all', ensureToken, (req, res, next) => {
         .then(querySnapshot => {
             console.log("get() method resolved ");
             querySnapshot.forEach(doc => {
-                allDocs.push({document: doc.id, data: doc.data()});
+                allDocs.push({id: doc.id, data: doc.data()});
             });
             console.log();
             res.json({ success:true, data: allDocs});
@@ -143,14 +166,17 @@ router.post('/create', ensureToken, ensureMobile, (req, res, next) => {
     })
 });
 
-router.get('/one/:id', ensureToken, (req, res, next) => {
+router.get('/one', ensureToken, (req, res, next) => {
     jwt.verify(res.token, process.env.SECRET_KEY, (err, data) => {
         if(err){
             console.log("data : ", data);
             res.json({ success: false, message: "User not permitted"});
         }
         var read = data.read;
-        let document = req.params.id;
+        let document = req.body.document;
+        if(typeof document === 'undefined'){
+            read = false;
+        }
         console.log(read);
         if(!read){
             res.json({ success: false, message: "Permission Denied"});

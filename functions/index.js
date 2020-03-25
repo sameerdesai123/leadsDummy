@@ -5,9 +5,9 @@ const cors = require('cors');
 const app = express();
 const jwt = require('jsonwebtoken');
 const Users = require('./routes/users');
-//const Leads = require('./routes/leads');
+const Leads = require('./routes/leads');
 const Jobs = require('./routes/jobs');
-// const Admin = require('./routes/admin/admin');
+const Admin = require('./routes/admin/admin');
 const path = require('path');
 
 require('dotenv').config();
@@ -21,13 +21,17 @@ app.set('view engine', 'html');                 // register file extension for p
 app.set('views', path.join(__dirname , '/views'));
 
 app.use('/api/users', Users);
-//app.use('/api/leads', Leads);
+app.use('/api/leads', Leads);
 app.use('/api/jobs', Jobs);
 
 app.get('/home', (req, res) => {
     res.send("<h1>Welcome to Leads Dummy</h1><br/>")
 })
 app.post('/admin-login', async (req, res) => {
+    var id;  // FOR DEV PURPOSE ONLY
+    if(typeof req.body.id !== 'undefined'){
+        id = req.body.id;
+    }
     if(req.body.username === process.env.ADMIN_USER && req.body.password === process.env.ADMIN_PASSWORD) 
     {
         let d = {
@@ -36,6 +40,9 @@ app.post('/admin-login', async (req, res) => {
             write: true,
             create: true,
             update: true
+        }
+        if( typeof id !== 'undefined'){
+            d.id = id;
         }
         console.log(d);
         try
@@ -47,7 +54,7 @@ app.post('/admin-login', async (req, res) => {
             res.json({success:false, msg: "Failed to generate Token"});
         }
     }else{
-        res.json({success:false, msg: "Wrong Credentials."})
+        res.json({success:false, msg: "Wrong Credentials Or Admin already logged in"})
     }
 });
 
