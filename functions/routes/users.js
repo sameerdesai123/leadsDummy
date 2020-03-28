@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 var sha1 = require('sha1');
 const {checkRead, checkUpdate, checkWrite, verifyToken, ensureMobile, ensureToken, login, getDoc, addDoc, getAllDocs } = require('../models/db-functions');
-
+require('dotenv').config();
 // Middleware
-router.use(express.json());
+router.use(express.json(process.env.USERS));
 
 // Middleware Functions 
 const setCollectionName = async (req, res, next) => {
@@ -38,6 +38,11 @@ const newDocName = async(req, res, next) => {
 const setDocData = async (req, res, next) => {
     console.log("Setting body of Document");
     res.docBody = req.body;
+    if(typeof res.docBody.Name === 'undefined'){
+        res.docBody.Name = res.docBody.FirstName + " " + res.docBody.LastName;
+        delete res.docBody.FirstName;
+        delete res.docBody.LastName;
+    }
     return next();
 }
 
