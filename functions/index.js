@@ -44,16 +44,16 @@ app.get('/home', ensureToken, (req, res, next) => {
     jwt.verify(res.token, process.env.SECRET_KEY, (err, data) => {
         if(err){
             console.log(err);
-            res.send("<h1>Failed</h1><br/>")
+            res.render('admin-login', {msg: "Wrong Credentials, try again"});
         }else{
-            res.send("<h1>Welcome to Leads Dummy, " + data + "</h1><br/>")
+            res.render('home', {msg: "Welcome"})
         }
     });
 })
 
 app.get('/admin-logout', async (req, res, next) => {
     res.clearCookie('token');
-    res.render('admin-portal-main', {msg: "Logged Out"})
+    res.render('admin-login', {msg: "Logged Out"})
 })
 
 app.post('/admin-login', async (req, res) => {
@@ -78,18 +78,18 @@ app.post('/admin-login', async (req, res) => {
         {
            var token = await jwt.sign(d, process.env.SECRET_KEY, { expiresIn: '60 m'});
            res.cookie('token', token);
-            res.render('admin-portal-main', { success: true, token: token , msg: "You are logged in as Admin"});
+            res.render('home', { success: true, token: token , msg: "You are logged in as Admin"});
         }catch(err){
             console.log(err);
-            res.render('admin-portal-main', {success:false, msg: "Failed to generate Token"})
+            res.render('admin-login', {success:false, msg: "Failed to generate Token"})
         }
     }else{
-        res.render( 'admin-portal-main', {success:false, msg: "Wrong Credentials Or Admin already logged in"})
+        res.render( 'admin-login', {success:false, msg: "Wrong Credentials Or Admin already logged in"})
     }
 });
 
 app.get('/admin', (req, res) => {
-    res.render('admin-portal-main', { msg: "Hello"});    
+    res.render('admin-login', { msg: ""});    
 });
 
 app.get('**', (req, res) => {

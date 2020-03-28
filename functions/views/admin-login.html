@@ -1,15 +1,12 @@
 {{> header}}
 
 <body class="text-center">
-  <form class="form-signin">
-    <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      wrong credentials code
-    <% if (messages.error) { %>
-    <%= messages.error %>
-    <% } %>
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  <form class="form-signin" method="POST" action="/admin-login">
+    <img class="mb-4" src="https://media-exp1.licdn.com/dms/image/C510BAQGOgpBkGbd4jA/company-logo_200_200/0?e=2159024400&v=beta&t=Cpe6GnZnwgijaqr-qF6cP4ojcfDX4zJdJJYLG6dKKCo" alt="" width="72" height="72">
+      {{msg}}
+    <h1 class="h3 mb-3 font-weight-normal">Leads Admin Portal</h1>
     <label  class="sr-only">User name</label>
-    <input type="text" id="uname" name="uname" class="form-control" placeholder="username" required autofocus>
+    <input type="text" id="uname" name="username" class="form-control" placeholder="username" required autofocus autocomplete="off">
     <label  class="sr-only">Password</label>
     <input type="password" id="password" name="password" class="form-control" placeholder="password" required>
     <div class="checkbox mb-3">
@@ -18,7 +15,7 @@
       </label>
     </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+    <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
   </form>
 
 
