@@ -4,9 +4,10 @@ mustacheExpress = require('mustache-express');
 const cors = require('cors');
 const app = express();
 const jwt = require('jsonwebtoken');
+const compression = require('compression');
 const Users = require('./routes/users');
 const Leads = require('./routes/leads');
-const Jobs = require('./routes/jobs');
+//const Jobs = require('./routes/jobs');
 const Admin = require('./routes/admin/admin');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -14,6 +15,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 app.use(express.json());
+app.use(compression());
 app.use(cors());
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,7 +25,7 @@ app.set('views', path.join(__dirname , '/views'));
 
 app.use('/api/users', Users);
 app.use('/api/leads', Leads);
-app.use('/api/jobs', Jobs);
+//app.use('/api/jobs', Jobs);
 
 
 var ensureToken = (req,res,next) => {
