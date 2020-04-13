@@ -1,0 +1,17 @@
+{{> header}}
+
+<body>
+    <div class="container">
+        <div class="card primary">
+            <div class="invisible" id="a">{{message}}</div>
+        </div>
+      <form class="form-signin" action="/admin-logout" method="GET">
+        <button class="btn btn-sm btn-primary btn-block" type="submit">Logout</button>
+      </form>
+    </div>
+<script>
+    var o = JSON.parse(document.getElementById('a').innerHTML);
+    console.log(o);
+    
+</script>
+{{> footer}}

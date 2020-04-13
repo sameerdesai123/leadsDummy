@@ -7,10 +7,16 @@ const jwt = require('jsonwebtoken');
 const compression = require('compression');
 const Users = require('./routes/users');
 const Leads = require('./routes/leads');
-//const Jobs = require('./routes/jobs');
+const dashboard = require('./routes/dashboard');
 const Admin = require('./routes/admin/admin');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const {checkRead, verifyToken, getDoc, getAllDocs } = require('./models/db-functions');
+
+var setCollec = (req, res, next) => {
+    res.collection  = 'master';
+    next();
+}
 
 require('dotenv').config();
 
@@ -25,7 +31,7 @@ app.set('views', path.join(__dirname , '/views'));
 
 app.use('/api/users', Users);
 app.use('/api/leads', Leads);
-//app.use('/api/jobs', Jobs);
+app.use('/dashboard', dashboard);
 
 
 var ensureToken = (req,res,next) => {
@@ -51,7 +57,15 @@ app.get('/home', ensureToken, (req, res, next) => {
             res.render('home', {msg: "Welcome"})
         }
     });
-})
+});
+
+app.get('/admin-dashboard', ensureToken, setCollec, getAllDocs, (req, res, next) => {
+    try{
+        res.render('dashboard', { success: true, message: JSON.stringify(res.sendObj)});
+    }catch(err){
+        res.render('dashboard', { success: false, message: "Data Retrival Failed"})
+    }
+});
 
 app.get('/admin-logout', async (req, res, next) => {
     res.clearCookie('token');
@@ -80,7 +94,8 @@ app.post('/admin-login', async (req, res) => {
         {
            var token = await jwt.sign(d, process.env.SECRET_KEY, { expiresIn: '60 m'});
            res.cookie('token', token);
-            res.render('home', { success: true, token: token , msg: "You are logged in as Admin"});
+           //res.render('home', { success: true, token: token , msg: "You are logged in as Admin"});
+            res.redirect('/admin-dashboard');
         }catch(err){
             console.log(err);
             res.render('admin-login', {success:false, msg: "Failed to generate Token"})

@@ -5,12 +5,12 @@ var sha1 = require('sha1');
 const {checkRead, checkUpdate, checkWrite, verifyToken, ensureMobile, ensureToken, login, getDoc, addDoc, getAllDocs } = require('../models/db-functions');
 require('dotenv').config();
 // Middleware
-router.use(express.json(process.env.USERS));
+router.use(express.json());
 
 // Middleware Functions 
 const setCollectionName = async (req, res, next) => {
     console.log("Setting Collection Name");
-    res.collection = 'users';
+    res.collection = 'master';
     return next();
 }
 
