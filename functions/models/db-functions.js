@@ -1,5 +1,5 @@
-db = require('./db-connect');
-jwt = require('jsonwebtoken');
+var db = require('./db-connect').firestore();
+var jwt = require('jsonwebtoken');
 require('dotenv').config();
 var schedule = require('node-schedule')
 var nodemailer = require('nodemailer');
@@ -170,6 +170,15 @@ var addDoc = async (req, res, next) => {
         .then( () => {
             console.log(document);
             res.sendObj = { success:true, data: document};
+            if( collection === 'leads' && typeof(res.newEntry) !== 'undefined'){
+                if(res.newEntry === true){
+                    res.stage = body.Status;
+                    res.region = body.Region;
+                    res.service = body.Services;
+                }else{
+                    res.newStage = body.Status;
+                }
+            }
             return next();
         })
         .catch(err => {

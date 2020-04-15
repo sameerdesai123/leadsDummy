@@ -7,6 +7,4 @@ admin.initializeApp({
   databaseURL: "https://leadsdummy.firebaseio.com"
 });
 
-let db = admin.firestore();
-
-module.exports = db;
+module.exports = admin;
