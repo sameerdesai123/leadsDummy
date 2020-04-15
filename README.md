@@ -7,4 +7,4 @@ REST API's for CRUD operations on firestore taking leads management scenario
 https://leadsdummy.firebaseapp.com/admin
 
 ### For API info 
-https://leadsdummy.firebaseapp.com
+https://documenter.getpostman.com/view/10676381/Szezbren?version=latest#4378229c-56c9-4699-9810-8573805d78dd
