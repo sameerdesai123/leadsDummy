@@ -10,7 +10,7 @@ router.use(express.json());
 // Middleware Functions 
 const setCollectionName = async (req, res, next) => {
     console.log("Setting Collection Name");
-    res.collection = 'master';
+    res.collection = 'users';
     return next();
 }
 

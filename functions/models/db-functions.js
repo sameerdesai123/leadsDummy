@@ -170,15 +170,6 @@ var addDoc = async (req, res, next) => {
         .then( () => {
             console.log(document);
             res.sendObj = { success:true, data: document};
-            if( collection === 'leads' && typeof(res.newEntry) !== 'undefined'){
-                if(res.newEntry === true){
-                    res.stage = body.Status;
-                    res.region = body.Region;
-                    res.service = body.Services;
-                }else{
-                    res.newStage = body.Status;
-                }
-            }
             return next();
         })
         .catch(err => {
@@ -264,6 +255,7 @@ var scheduleAlerts = async (req, res, next) => {
                 console.log("Starting JOB:  Send Mail");
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
+                    secure: true,
                     auth: {
                     user: process.env.myMail,
                     pass: process.env.myPass

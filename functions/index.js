@@ -113,4 +113,31 @@ app.get('**', (req, res) => {
     res.send("Endpoint doesn't exist");
 })
 
+
+// Trigger Declarations 
+const master = require('./models/db-master');
+
+exports.createLead = functions.firestore
+    .document('users/{userId}')
+    .onCreate((snap, context) => {
+      const newValue = snap.data();
+      var stage = newValue.Status;
+      var region = newValue.Region;
+      var service = newValue.Services;
+      // Get probability and send that too
+      master.newLead(stage, region, service);
+});
+
+exports.updateLead = functions.firestore
+    .document('users/{userId}')
+    .onUpdate((change, context) => {
+      const newValue = change.after.data();
+      const previousValue = change.before.data();
+      // Only updating stages
+      master.updateLead(newValue, previousValue);
+});
+
+
+// Exporting Nodejs app
+
 exports.app = functions.https.onRequest(app);

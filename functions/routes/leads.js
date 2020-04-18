@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 var sha1 = require('sha1');
 const {checkRead, checkUpdate, checkWrite, verifyToken, ensureMobile,ensureAccAndStatus, ensureToken, login, getDoc, addDoc, getAllDocs, getAssociatedLeads, scheduleAlerts } = require('../models/db-functions');
-const { updateStage, addStage, delStage, addRegion, delRegion, addService } = require('../models/db-master');
+// const { updateStage, addStage, delStage, addRegion, delRegion, addService } = require('../models/db-master');
 require('dotenv').config();
 // Middleware
 router.use(express.json(process.env.LEADS));
@@ -23,17 +23,17 @@ const setDocumentName = async (req, res, next) => {
 }
 
 // Set flag to indicate new Entry
-const newEntry = async (req, res, next) => {
-    console.log("Setting Flag to indicate new Entry");
-    res.newEntry = true;
-    return next();
-}
+// const newEntry = async (req, res, next) => {
+//     console.log("Setting Flag to indicate new Entry");
+//     res.newEntry = true;
+//     return next();
+// }
 
-const updateEntry = async (req, res, next) => {
-    console.log("Setting Flag to indicate update Entry");
-    res.newEntry = false;
-    return next();
-}
+// const updateEntry = async (req, res, next) => {
+//     console.log("Setting Flag to indicate update Entry");
+//     res.newEntry = false;
+//     return next();
+// }
 
 // take document id from request body
 const setDocumentNameFromBody = async(req, res, next) => {
@@ -104,7 +104,7 @@ router.get('/all-leads', ensureToken, verifyToken, checkRead, setCollectionName,
     res.json(res.sendObj);   
 })
 
-router.post('/create', ensureToken, ensureAccAndStatus, verifyToken, checkWrite, setCollectionName, setDocData, newEntry, addDoc, scheduleAlerts, (req, res, next) => {
+router.post('/create', ensureToken, ensureAccAndStatus, verifyToken, checkWrite, setCollectionName, setDocData, addDoc, scheduleAlerts, (req, res, next) => {
     console.log("Response : ", res.sendObj);
     res.collection = '';
     res.document ='';
@@ -112,7 +112,7 @@ router.post('/create', ensureToken, ensureAccAndStatus, verifyToken, checkWrite,
     res.json(res.sendObj);    
 });
 
-router.post('/update', ensureToken, ensureAccAndStatus, verifyToken, checkWrite, setCollectionName, setDocData, updateEntry, addDoc, scheduleAlerts, (req, res, next) => {
+router.post('/update', ensureToken, ensureAccAndStatus, verifyToken, checkWrite, setCollectionName, setDocData, addDoc, scheduleAlerts, (req, res, next) => {
     console.log("Response : ", res.sendObj);
     res.collection = '';
     res.document ='';
